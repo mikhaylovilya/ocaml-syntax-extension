@@ -1,0 +1,56 @@
+(library
+ (name ocamlext)
+ (public_name ocamlext)
+ (modules Pa_qml Pr_qml)
+ (libraries camlp5)
+ (preprocess
+  (action
+   (run %{project_root}/bin/pp5+dump.byte %{input-file}))))
+
+(rule
+ (targets pp5+dump.byte)
+ (action
+  (run
+   mkcamlp5
+   -package
+   camlp5.pa_o,camlp5.pr_dump,camlp5.extend,camlp5.extfold,camlp5.quotations
+   -o
+   %{targets})))
+
+(cram
+ (deps
+  ocamlext.cma ;pp5+ocamlext+o.exe
+  ))
+
+(rule
+ (targets pp5+ocamlext+dump.exe)
+ (deps ocamlext.cmxa)
+ (action
+  (run
+   mkcamlp5.opt
+   -package
+   camlp5,camlp5.pa_o,camlp5.macro,camlp5.pr_dump
+   %{deps}
+   -o
+   %{targets})))
+
+(rule
+ (targets pp5+ocamlext+o.exe)
+ (deps ocamlext.cmxa)
+ (action
+  (run
+   mkcamlp5.opt
+   -package
+   camlp5,camlp5.pa_o,camlp5.macro,camlp5.pr_o
+   %{deps}
+   -o
+   %{targets})))
+
+(env
+ (dev
+  (flags
+   (:standard -rectypes -warn-error -A -w -K-9-27)))
+ (release
+  (flags
+   (:standard -rectypes -warn-error -A -w -K-9-27))
+  (ocamlopt_flags -O3)))

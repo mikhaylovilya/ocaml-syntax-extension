@@ -1,12 +1,21 @@
-open Printf ;;
-(*let _ = printf "%s" "ggg" ;; *)
+(* open Pn.Pr_qml;; -- i dunno it doesnt seem to work correctly*)
+let _ = Printf.printf "\nDemo used to test ADT for qml code in module pr_qml!\n"
+
+(* type qmlProp2 = string * string;;
+type qmlObj2 = string * qmlNode list and qmlNode = Prop of qmlProp2 | Obj of qmlObj2;;
+
+let nprop1 : qmlProp2 = "x", "40";;
+let nprop2: qmlProp2 = "y", "0";;
+let nobj1 : qmlObj2 = "button", [Prop nprop1; Prop nprop2];;
+let nprop3 : qmlProp2 = "x", "0";;
+let nprop4: qmlProp2 = "y", "0";;
+let nobj2 : qmlObj2 = "rectangle", [Prop nprop3; Obj nobj1; Prop nprop4];; *)
 
 type qmlProp =
 {
   propId : string;
   propVal : string  
 }
-
 type qmlObj = 
 {
   title : string;
@@ -59,8 +68,8 @@ let rectangle2props = [`QmlProp {propId = "id"; propVal = "rect2"}] ;;
 let rectangle2 = {title = "Rectangle"; qmlNodes = rectangle2props @ [`QmlObj image] @ [`QmlProp {propId = "x"; propVal = "31"}] @ [`QmlObj rectangle1]} ;;
 
 let s = qmlObjListToString [rectangle2] 0 ;;
-let _ = printf "%s" s ;;
+let _ = Printf.printf "%s" s ;;
 let __ = 
   let oc = open_out "qmltest.qml" in
-  fprintf oc "%s" s; 
+  Printf.fprintf oc "%s" s; 
   close_out oc ;;
