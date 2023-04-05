@@ -11,9 +11,7 @@ END *)
 (* property followed by \n or ; 
 
    property <type> <name> : <value>
-    <value> ::= LIDENT | UIDENT | INT | STRING |
-                bool? | 
-                expr?
+    <value> ::= expr | qml
     
    property alias <name> : <reference>
 
@@ -27,6 +25,16 @@ open Pcaml
 (* let g = Grammar.gcreate (Plexer.gmake());; *)
 (* let qexpr = Grammar.Entry.create g "expression";; *)
 
+let checkQmlObj =
+  let f stream = 
+    match Stream.npeek 2 stream with
+    | [(smth1, uid);(smth2, paren)] -> 
+      if (Char.code uid.[0] > 64 || Char.code uid.[0] < 91) && paren.[0] = '{' then true else false
+    | _ -> false
+  in
+  Grammar.Entry.of_parser gram "checkQmlObj" (fun strm -> if f strm then () else raise Stream.Failure)
+;;
+
 EXTEND
   GLOBAL: expr;
   expr: BEFORE "expr1"
@@ -39,16 +47,25 @@ EXTEND
     -> <:expr< do {$list:nodes$} >>
     ]
   ];
+  propid:
+  [
+    [x = FOLD1 (fun l1 l2 -> if <:expr<$l1$>> = "" then <:expr<$l2$>> else <:expr<$l1$>> ^ "." ^ <:expr<$l2$>>) "" LIDENT SEP "." -> x]
+  ];
+  propval:
+  [
+    [checkQmlObj; pv = qml -> pv] |
+    [pv = expr LEVEL "expr1" -> pv]
+  ];
   prop: 
   [
-    (* [propid = LIDENT; ":"; propval = qml -> <:expr< ($lid:propid$, $propval$) >>] | *)
-    [propid = LIDENT; ":"; propval = expr LEVEL "expr1" -> <:expr< ($lid:propid$, $propval$) >>] |
-    [propid = UIDENT; ":"; propval = expr LEVEL "expr1" -> <:expr< ($uid:propid$, $propval$) >>]
+    [propid = propid; ":"; propval = propval -> <:expr< ($str:propid$, $propval$) >>] 
+    (* [propid = LIDENT; ":"; propval =  -> <:expr< ($lid:propid$, $propval$) >>] *)
+    (* [propid = UIDENT; ":"; propval = expr LEVEL "expr1" -> <:expr< ($uid:propid$, $propval$) >>] *)
   ];
   node:
   [
-    [nodetype = prop -> nodetype] |
-    [nodetype = qml -> nodetype]
+    [nodetype = qml -> nodetype] |
+    [nodetype = prop -> nodetype]
   ];
 END
 

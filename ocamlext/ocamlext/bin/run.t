@@ -1,19 +1,25 @@
   $ cat <<EOF > qml1.ml
   > QML 
-  >   RECTANGLE 
+  >   Rectangle
   >   {
   >       id : rect1;
   >       x : 12; z : -4;
-  >       
+  >      
+  >       header : Button
+  >       {
+  >         src : "src";
+  >         anotherprop : 90
+  >       }; 
+  > 
   >       ToolButton {
   >         text: qsTr("Open"); (*ocaml expr deletes parentheses*)
   >         iconName: "document-open"
   >       };
   > 
-  >       (*border.color : "blue"; -- doesnt work*)
+  >       border.color : "blue";
   >       BUTTON 
   >       {
-  >         OnClick : "dosmth"
+  >         onClick : "dosmth"
   >       };
   > 
   >       IMAGE
