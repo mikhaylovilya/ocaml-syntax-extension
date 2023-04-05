@@ -7,13 +7,13 @@
   >       
   >       ToolButton {
   >         text: qsTr("Open"); (*ocaml expr deletes parentheses*)
-  >         iconname: "document-open"
+  >         iconName: "document-open"
   >       };
   > 
   >       (*border.color : "blue"; -- doesnt work*)
   >       BUTTON 
   >       {
-  >         onclick : "dosmth"
+  >         OnClick : "dosmth"
   >       };
   > 
   >       IMAGE

@@ -41,8 +41,9 @@ EXTEND
   ];
   prop: 
   [
-    [propid = LIDENT; ":"; propval = expr LEVEL "expr1" -> <:expr< ($lid:propid$, $propval$) >>]
-    (* [propid = LIDENT; ":"; propval = qml -> <:expr< ($lid:propid$, $propval$) >>] *)
+    (* [propid = LIDENT; ":"; propval = qml -> <:expr< ($lid:propid$, $propval$) >>] | *)
+    [propid = LIDENT; ":"; propval = expr LEVEL "expr1" -> <:expr< ($lid:propid$, $propval$) >>] |
+    [propid = UIDENT; ":"; propval = expr LEVEL "expr1" -> <:expr< ($uid:propid$, $propval$) >>]
   ];
   node:
   [
