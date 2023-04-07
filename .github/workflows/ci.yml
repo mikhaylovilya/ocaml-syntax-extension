@@ -31,7 +31,9 @@ jobs:
           fetch-depth: 1
 
       # docker has opam 2.0.x where depext is not yet integrated
-      - run: opam install . --deps-only --with-test
+      - run: sudo apt install pkg-config --yes
+      - run: sudo apt install libpcre3-dev m4 --yes
       - run: opam install camlp5 --yes
-      - run: opam exec -- dune build
-      - run: opam exec -- dune runtest
+      - run: eval $(opam env)
+      - run: opam exec -- dune build --root=./ocamlext/ocamlext
+      - run: opam exec -- dune runtest --root=./ocamlext/ocamlext
