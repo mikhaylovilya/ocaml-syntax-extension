@@ -1,19 +1,8 @@
 module TEST = struct
-  (* type qmlProp = string * qmlObj
-
-     type qmlObj = string * qmlNode list
-     and qmlNode = Prop of qmlProp | Obj of qmlObj *)
-  type qmlObj = string * qmlNode list
-  and qmlNode = Prop of qmlProp | QmlObj of qmlObj
-  and qmlProp = { propid : string; propval : propval }
-  and propval = Expr of string | QmlObjVal of qmlObj
-
-  let prop1 = { propid = "onClick"; propval = Expr "dosmth" }
-  let obj1 : qmlObj = ("Button", [ Prop prop1 ])
-  let prop2 = { propid = "src"; propval = Expr "http://somesrc.com" }
-  let obj2 : qmlObj = ("Image", [ Prop prop2 ])
-  let prop3 = { propid = "header"; propval = QmlObjVal obj2 }
-  let obj3 : qmlObj = ("Window", [ Prop prop3; QmlObj obj2 ])
+  type qml_obj = { cname : string; nodes : qml_node list }
+  and qml_node = Prop of qml_prop | QmlObj of qml_obj
+  and qml_prop = { prop_id : string; prop_val : prop_val }
+  and prop_val = Expr of string | QmlObjVal of qml_obj
 end
 
 type qmlProp = { propId : string; propVal : string }

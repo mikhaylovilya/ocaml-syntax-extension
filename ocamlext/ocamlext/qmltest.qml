@@ -17,7 +17,7 @@ Rectangle
 			id: text1
 			x: 40
 			y: 10
-			text: hi
+			text: "hi" + "you"
 		}
 		id: rect1
 	}

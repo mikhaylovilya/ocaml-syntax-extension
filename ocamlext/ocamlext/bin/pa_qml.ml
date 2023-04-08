@@ -7,7 +7,9 @@
    <prop> : {<expr>} -> jsFunc
 *)
 
-open Pcaml 
+open Pcaml
+open Pr_qml.TEST
+let obj1 = {cname = "Rect"; nodes = [Prop { prop_id = "x"; prop_val = Expr " \"str\" "}]}
 
 (* let g = Grammar.gcreate (Plexer.gmake());; *)
 (* let qexpr = Grammar.Entry.create g "expression";; *)
@@ -25,13 +27,15 @@ let checkQmlObj =
 EXTEND
   GLOBAL: expr;
   expr: BEFORE "expr1"
-  [["QML"; x = qml; "ENDQML" -> x]];
+  [["QML"; x = qml; "ENDQML" 
+  -> <:expr< $x$ >>
+  ]];
   qml:
   [
     [cname = UIDENT; "{"; nodes = LIST0 node SEP ";" ; "}"
     (* -> <:expr< Printf.printf "2222Hello, %s!" $str:cname$ >> *)
     (* -> <:expr< $uid:cname$ >> *)
-    -> <:expr< do {$list:nodes$} >>
+    -> <:expr< { cname = $str:cname$; nodes = [do {$list:nodes$}] } >>
     ]
   ];
   propid:
@@ -41,17 +45,17 @@ EXTEND
   ];
   propval:
   [
-    [checkQmlObj; pv = qml -> pv] |
-    [pv = expr LEVEL "expr1" -> pv]
+    [checkQmlObj; pv = qml -> <:expr< QmlObjVal $pv$ >>] |
+    [pv = expr LEVEL "expr1" -> <:expr< Expr $pv$ >>]
   ];
   prop: 
   [
-    [propid = propid; ":"; propval = propval -> <:expr< ($str:propid$, $propval$) >>] 
+    [propid = propid; ":"; propval = propval -> <:expr< { prop_id = $str:propid$; prop_val = $propval$} >>] 
   ];
   node:
   [
-    [checkQmlObj; nodetype = qml -> nodetype] |
-    [nodetype = prop -> nodetype]
+    [checkQmlObj; nodetype = qml -> <:expr< QmlObj $nodetype$ >>] |
+    [nodetype = prop -> <:expr< Prop $nodetype$ >>]
   ];
 END
 

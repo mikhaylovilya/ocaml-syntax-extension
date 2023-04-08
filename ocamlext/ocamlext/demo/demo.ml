@@ -22,7 +22,7 @@ let textprops =
     `QmlProp { propId = "id"; propVal = "text1" };
     `QmlProp { propId = "x"; propVal = "40" };
     `QmlProp { propId = "y"; propVal = "10" };
-    `QmlProp { propId = "text"; propVal = "hi" };
+    `QmlProp { propId = "text"; propVal = "\"hi\" + \"you\"" };
   ]
 
 let text = { title = "Text"; qmlNodes = textprops }
