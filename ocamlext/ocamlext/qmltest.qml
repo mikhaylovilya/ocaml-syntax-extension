@@ -21,4 +21,10 @@ Rectangle
 		}
 		id: rect1
 	}
+	header: 
+	Image
+	{
+		src: somesrc.png
+	}
+
 }

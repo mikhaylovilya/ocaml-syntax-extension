@@ -7,8 +7,8 @@
    <prop> : {<expr>} -> jsFunc
 *)
 open Pcaml
-open Pr_qml.TEST
-let obj1 = {cname = "Rect"; nodes = [Prop { prop_id = "x"; prop_val = Expr " \"str\" "}]}
+open Pr_qml
+let obj1 = {obj_name = "Rect"; obj_nodes = [QmlProp { prop_name = "x"; prop_val = Expr " \"str\" "}]}
 
 (* let g = Grammar.gcreate (Plexer.gmake());; *)
 (* let qexpr = Grammar.Entry.create g "expression";; *)
@@ -34,7 +34,7 @@ EXTEND
     [cname = UIDENT; "{"; nodes = LIST0 node SEP ";" ; "}"
     (* -> <:expr< Printf.printf "2222Hello, %s!" $str:cname$ >> *)
     (* -> <:expr< $uid:cname$ >> *)
-    -> <:expr< { cname = $str:cname$; nodes = [do {$list:nodes$}] } >>
+    -> <:expr< { obj_name = $str:cname$; obj_nodes = [do {$list:nodes$}] } >>
     ]
   ];
   propid:
@@ -52,12 +52,12 @@ EXTEND
   ];
   prop: 
   [
-    [propid = propid; ":"; propval = propval -> <:expr< { prop_id = $str:propid$; prop_val = $propval$} >>] 
+    [propid = propid; ":"; propval = propval -> <:expr< { prop_name = $str:propid$; prop_val = $propval$} >>] 
   ];
   node:
   [
     [checkQmlObj; nodetype = qml -> <:expr< QmlObj $nodetype$ >>] |
-    [nodetype = prop -> <:expr< Prop $nodetype$ >>]
+    [nodetype = prop -> <:expr< QmlProp $nodetype$ >>]
   ];
 END
 
