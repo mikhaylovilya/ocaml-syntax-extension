@@ -6,7 +6,6 @@
    function -> jsFunc
    <prop> : {<expr>} -> jsFunc
 *)
-
 open Pcaml
 open Pr_qml.TEST
 let obj1 = {cname = "Rect"; nodes = [Prop { prop_id = "x"; prop_val = Expr " \"str\" "}]}
@@ -46,7 +45,10 @@ EXTEND
   propval:
   [
     [checkQmlObj; pv = qml -> <:expr< QmlObjVal $pv$ >>] |
-    [pv = expr LEVEL "expr1" -> <:expr< Expr $pv$ >>]
+    [pv = expr LEVEL "expr1" 
+    -> let str_expr = Printf.sprintf "%s" (Eprinter.apply pr_expr Pprintf.empty_pc pv) in
+       let str_expr = str_expr |> String.escaped in
+      <:expr< Expr $str:str_expr$ >>]
   ];
   prop: 
   [
@@ -58,7 +60,6 @@ EXTEND
     [nodetype = prop -> <:expr< Prop $nodetype$ >>]
   ];
 END
-
 
 (* $ cat <<EOF > test1.ml
 > let x = 1 in sum x ; x ; 2 end;;
