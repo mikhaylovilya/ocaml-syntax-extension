@@ -1,3 +1,4 @@
+import QtQuick 2.5
 Rectangle
 {
 	id: rect2
@@ -6,12 +7,11 @@ Rectangle
 		id: image1
 		x: 60
 		y: 30
-		image: url
 	}
-	x: 31
+	width: 640
+	height: 480
 	Rectangle
 	{
-		x: 31
 		Text
 		{
 			id: text1
@@ -20,11 +20,7 @@ Rectangle
 			text: "hi" + "you"
 		}
 		id: rect1
+		width: 120
+		height: 60
 	}
-	header: 
-	Image
-	{
-		src: somesrc.png
-	}
-
 }

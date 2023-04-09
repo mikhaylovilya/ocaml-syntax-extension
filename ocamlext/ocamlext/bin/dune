@@ -19,7 +19,8 @@
 
 (cram
  (deps
-  ocamlext.cma ;pp5+ocamlext+o.exe
+  ocamlext.cma
+  ;pp5+ocamlext+o.exe
   ))
 
 (rule

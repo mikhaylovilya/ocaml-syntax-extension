@@ -11,22 +11,23 @@ let textprops =
   ]
 
 let text = { obj_name = "Text"; obj_nodes = textprops }
-let rectangle1props = [ QmlProp { prop_name = "id"; prop_val = Expr "rect1" } ]
+
+let rectangle1props =
+  [
+    QmlProp { prop_name = "id"; prop_val = Expr "rect1" };
+    QmlProp { prop_name = "width"; prop_val = Expr "120" };
+    QmlProp { prop_name = "height"; prop_val = Expr "60" };
+  ]
 
 let rectangle1 =
-  {
-    obj_name = "Rectangle";
-    obj_nodes =
-      [ QmlProp { prop_name = "x"; prop_val = Expr "31" } ]
-      @ [ QmlObj text ] @ rectangle1props;
-  }
+  { obj_name = "Rectangle"; obj_nodes = [ QmlObj text ] @ rectangle1props }
 
 let imageprops =
   [
     QmlProp { prop_name = "id"; prop_val = Expr "image1" };
     QmlProp { prop_name = "x"; prop_val = Expr "60" };
     QmlProp { prop_name = "y"; prop_val = Expr "30" };
-    QmlProp { prop_name = "image"; prop_val = Expr "url" };
+    (* QmlProp { prop_name = "image"; prop_val = Expr "" }; *)
   ]
 
 let image = { obj_name = "Image"; obj_nodes = imageprops }
@@ -37,30 +38,13 @@ let rectangle2 =
     obj_name = "Rectangle";
     obj_nodes =
       rectangle2props @ [ QmlObj image ]
-      @ [ QmlProp { prop_name = "x"; prop_val = Expr "31" } ]
-      @ [ QmlObj rectangle1 ]
-      @ [
-          QmlProp
-            {
-              prop_name = "header";
-              prop_val =
-                QmlObjVal
-                  {
-                    obj_name = "Image";
-                    obj_nodes =
-                      [
-                        QmlProp
-                          { prop_name = "src"; prop_val = Expr "somesrc.png" };
-                      ];
-                  };
-            };
-        ];
+      @ [ QmlProp { prop_name = "width"; prop_val = Expr "640" } ]
+      @ [ QmlProp { prop_name = "height"; prop_val = Expr "480" } ]
+      @ [ QmlObj rectangle1 ];
   }
 
-let s = obj_to_string rectangle2 0
+let code1 = { qml_imports = [ "QtQuick 2.5" ]; qml_obj = rectangle2 }
+let s = code_to_string code1
 let _ = Printf.printf "%s" s
-
-let __ =
-  let oc = open_out "qmltest.qml" in
-  Printf.fprintf oc "%s" s;
-  close_out oc
+let _ = print_to_file s
+let _ = run () |> Printf.printf "%d"

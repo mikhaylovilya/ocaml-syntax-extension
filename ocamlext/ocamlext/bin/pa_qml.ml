@@ -27,7 +27,7 @@ EXTEND
   GLOBAL: expr;
   expr: BEFORE "expr1"
   [["QML"; x = qml; "ENDQML" 
-  -> <:expr< $x$ >>
+  -> <:expr< print_to_file obj_to_string $x$ >>
   ]];
   qml:
   [
@@ -77,3 +77,8 @@ $ camlp5o ~/Desktop/testing_dune/pn/bin/main.cmo pr_o.cmo qml.ml *)
   Sys.command (
     "qmlscene asdf.qml"
   ) *)
+
+  (* > type qml_obj = { cname : string; nodes : qml_node list }
+  > and qml_node = Prop of qml_prop | QmlObj of qml_obj
+  > and qml_prop = { prop_id : string; prop_val : prop_val }
+  > and prop_val = Expr of string | QmlObjVal of qml_obj *)
