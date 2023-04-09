@@ -1,21 +1,6 @@
-(*-- i dunno it doesnt seem to work correctly
-  jsx
-  хотим как в jsx но для qml -- в qml запихать --, как в javascript запихали jsx
-  Lookahead one in camlp5 -- dragon book
-*)
 open Ocamlext.Pr_qml
 
 let _ = Printf.printf "\nDemo used to test ADT for qml code in module pr_qml!\n"
-
-(* type qmlProp2 = string * string;;
-   type qmlObj2 = string * qmlNode list and qmlNode = Prop of qmlProp2 | Obj of qmlObj2;;
-
-   let nprop1 : qmlProp2 = "x", "40";;
-   let nprop2: qmlProp2 = "y", "0";;
-   let nobj1 : qmlObj2 = "button", [Prop nprop1; Prop nprop2];;
-   let nprop3 : qmlProp2 = "x", "0";;
-   let nprop4: qmlProp2 = "y", "0";;
-   let nobj2 : qmlObj2 = "rectangle", [Prop nprop3; Obj nobj1; Prop nprop4];; *)
 
 let textprops =
   [
