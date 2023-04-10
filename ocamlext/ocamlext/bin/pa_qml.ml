@@ -26,9 +26,16 @@ let checkQmlObj =
 EXTEND
   GLOBAL: expr;
   expr: BEFORE "expr1"
-  [["QML"; x = qml; "ENDQML" 
-  -> <:expr< print_to_file obj_to_string $x$ >>
+  [["QML"; imports = LIST0 import SEP ";"; q = qml; "ENDQML" 
+  -> let imps = <:expr< [do {$list:imports$}] >> in 
+     let code = <:expr< { qml_imports = $imps$; qml_obj = $q$} >> in 
+       <:expr< run (code_to_string $code$) >>
   ]];
+  import:
+  [
+    ["import"; imp = STRING
+    -> <:expr< $str:imp$ >>]
+  ];
   qml:
   [
     [cname = UIDENT; "{"; nodes = LIST0 node SEP ";" ; "}"
