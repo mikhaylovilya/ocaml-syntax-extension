@@ -54,4 +54,6 @@ let print_to_file qml_src =
   Printf.fprintf oc "%s" qml_src;
   close_out oc
 
-let run () = Sys.command "qmlscene qmltest.qml"
+let run qml_src =
+  let _ = print_to_file qml_src in
+  Sys.command "qmlscene qmltest.qml"
