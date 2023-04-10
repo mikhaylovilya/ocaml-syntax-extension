@@ -19,7 +19,10 @@
 
 (cram
  (deps
+  pr_qml.ml
+  ./.ocamlext.objs/byte/ocamlext.cmi
   ocamlext.cma
+  ocamlext.cmxa
   ;pp5+ocamlext+o.exe
   ))
 
