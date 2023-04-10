@@ -46,5 +46,4 @@ let rectangle2 =
 let code1 = { qml_imports = [ "QtQuick 2.5" ]; qml_obj = rectangle2 }
 let s = code_to_string code1
 let _ = Printf.printf "%s" s
-let _ = print_to_file s
-let _ = run () |> Printf.printf "%d"
+let _ = run s
