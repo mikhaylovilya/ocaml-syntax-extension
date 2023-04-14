@@ -38,10 +38,10 @@ EXTEND
   ];
   qml:
   [
-    [cname = UIDENT; "{"; nodes = LIST0 node SEP ";" ; "}"
+    [cname = UIDENT; "{"; nodes = FOLD0 (fun n1 n2 -> <:expr< $n1$ @ [$n2$] >>) <:expr< [] >> node SEP ";" ; "}"
     (* -> <:expr< Printf.printf "2222Hello, %s!" $str:cname$ >> *)
     (* -> <:expr< $uid:cname$ >> *)
-    -> <:expr< { obj_name = $str:cname$; obj_nodes = [do {$list:nodes$}] } >>
+    -> <:expr< { obj_name = $str:cname$; obj_nodes = $nodes$ } >>
     ]
   ];
   propid:
@@ -51,11 +51,11 @@ EXTEND
   ];
   propval:
   [
-    [checkQmlObj; pv = qml -> <:expr< QmlObjVal $pv$ >>] |
+    [checkQmlObj; pv = qml -> <:expr< (QmlObjVal $pv$) >>] |
     [pv = expr LEVEL "expr1" 
     -> let str_expr = Printf.sprintf "%s" (Eprinter.apply pr_expr Pprintf.empty_pc pv) in
        let str_expr = str_expr |> String.escaped in
-      <:expr< Expr $str:str_expr$ >>]
+      <:expr< (Expr $str:str_expr$) >>]
   ];
   prop: 
   [
@@ -63,8 +63,8 @@ EXTEND
   ];
   node:
   [
-    [checkQmlObj; nodetype = qml -> <:expr< QmlObj $nodetype$ >>] |
-    [nodetype = prop -> <:expr< QmlProp $nodetype$ >>]
+    [checkQmlObj; nodetype = qml -> <:expr< (QmlObj $nodetype$) >>] |
+    [nodetype = prop -> <:expr< (QmlProp $nodetype$) >>]
   ];
 END
 
