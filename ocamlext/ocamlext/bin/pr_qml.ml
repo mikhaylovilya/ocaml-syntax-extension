@@ -4,13 +4,6 @@ and qml_node = QmlProp of qml_prop | QmlObj of qml_obj
 and qml_prop = { prop_name : string; prop_val : qml_val }
 and qml_val = Expr of string | QmlObjVal of qml_obj
 
-(* type qmlProp = { propId : string; propVal : string }
-
-   type qmlObj = {
-     title : string;
-     qmlNodes : [ `QmlProp of qmlProp | `QmlObj of qmlObj ] list;
-   } *)
-
 let rec tab n = match n with 0 -> "" | n -> "\t" ^ tab (n - 1)
 
 let rec prop_to_string q_prop tp =
@@ -20,7 +13,7 @@ let rec prop_to_string q_prop tp =
         q_prop.prop_val
     ^ "\n"
   in
-  str (*^ propListToString tl tp *)
+  str
 
 and obj_to_string q_obj tp =
   (*tp - tabulation parameter*)
@@ -37,9 +30,7 @@ and obj_to_string q_obj tp =
         ^ f nodestl tp
   in
 
-  base
-  ^ f q_obj.obj_nodes (tp + 1)
-  ^ tab tp ^ "}" ^ "\n" (*^ qmlObjListToString tl tp*)
+  base ^ f q_obj.obj_nodes (tp + 1) ^ tab tp ^ "}" ^ "\n"
 
 let code_to_string q_code =
   List.fold_right
@@ -56,4 +47,4 @@ let print_to_file qml_src =
 
 let run qml_src =
   let _ = print_to_file qml_src in
-  Sys.command "qmlscene qmltest.qml"
+  Sys.command "qmlscene qmltest.qml --quit"
