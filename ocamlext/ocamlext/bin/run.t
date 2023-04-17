@@ -54,7 +54,12 @@ $ CAMLP5PARAM='b t' camlp5o ~/Desktop/testing_dune/pn/bin/main.cmo pr_o.cmo qml1
   >     id: root;
   >     width: 680;
   >     height: 480;
-  > 
+  >     
+  >     gradient: Gradient 
+  >     {
+  >       GradientStop { position: 0.0; color: "black" };
+  >       GradientStop { position: 1.0; color: "white" }
+  >     };
   >     Text {
   >       x: parent.width / 2;
   >       y: parent.height / 2;
