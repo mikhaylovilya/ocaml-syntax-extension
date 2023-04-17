@@ -31,7 +31,8 @@ jobs:
           fetch-depth: 1
 
       # docker has opam 2.0.x where depext is not yet integrated
-      - run: sudo apt install pkg-config --yes --fix-missing
+      - run: sudo apt update
+      - run: sudo apt install pkg-config --yes
       - run: sudo apt install libpcre3-dev m4 --yes
       - run: opam install camlp5 --yes
       - run: opam install conf-qt --yes
