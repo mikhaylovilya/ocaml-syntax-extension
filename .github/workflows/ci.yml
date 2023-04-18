@@ -34,7 +34,7 @@ jobs:
       - run: sudo apt update
       - run: sudo apt install pkg-config --yes
       - run: sudo apt install libpcre3-dev m4 --yes
-      - run: opam install conf-qt --deps-only --yes
+      - run: opam install conf-qt --depext-only --yes
       - run: opam install conf-qt --yes
       - run: opam install camlp5 --yes
       - run: eval $(opam env)
