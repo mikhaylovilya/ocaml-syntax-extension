@@ -1,4 +1,3 @@
-ocamlext/_build
-ocamlext/ocamlext/_build
-ocamlext/ocamlext/nextdemo
-ocamlext/ocamlext/qmltest.qml
+_build
+nextdemo
+qmltest.qml

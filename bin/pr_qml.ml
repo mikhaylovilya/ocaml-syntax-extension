@@ -47,4 +47,4 @@ let print_to_file qml_src =
 
 let run qml_src =
   let _ = print_to_file qml_src in
-  Sys.command "qmlscene qmltest.qml --quit" (*--quit*)
+  Sys.command "qmlscene qmltest.qml" (*--quit*)
