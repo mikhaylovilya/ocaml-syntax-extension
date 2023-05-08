@@ -8,7 +8,7 @@
 *)
 open Pcaml
 open Pr_qml
-let obj1 = {obj_name = "Rect"; obj_nodes = [QmlProp { prop_name = "x"; prop_val = Expr " \"str\" "}]}
+(* let obj1 = {obj_name = "Rect"; obj_nodes = [QmlProp { prop_name = "x"; prop_val = Expr " \"str\" "}]} *)
 
 (* let g = Grammar.gcreate (Plexer.gmake());; *)
 (* let qexpr = Grammar.Entry.create g "expression";; *)
@@ -26,10 +26,10 @@ let checkQmlObj =
 EXTEND
   GLOBAL: expr;
   expr: BEFORE "expr1"
-  [["QML"; imports = LIST0 import SEP ";"; q = qml; "ENDQML" 
+  [["QML"; ui = STRING; imports = LIST0 import SEP ";"; q = qml; "ENDQML" 
   -> let imps = <:expr< [do {$list:imports$}] >> in 
      let code = <:expr< { qml_imports = $imps$; qml_obj = $q$} >> in 
-       <:expr< run (code_to_string $code$) >>
+       <:expr< run ~qml_src:(code_to_string $code$) ~filename:$str:ui$ ~args:[] >>
   ]];
   import:
   [

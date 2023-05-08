@@ -1,0 +1,59 @@
+(env
+ (dev
+  (flags
+   (:standard -rectypes -warn-error -A -w -K-9-27)))
+ (release
+  (flags
+   (:standard -rectypes -warn-error -A -w -K-9-27))
+  (ocamlopt_flags -O3)))
+
+(executable
+ (name test1)
+ (modules Test1)
+ (libraries ocamlext))
+
+(executable
+ (name test2)
+ (modules Test2)
+ (libraries ocamlext)
+ (preprocess
+  (action
+   (run %{project_root}/tests/pp5+dump.exe %{input-file})))
+ ;  (preprocess
+ ;   (pps ppx_inline_test -- -pp %{project_root}/nextdemo/pp5+dump.exe))
+ (preprocessor_deps %{project_root}/tests/pp5+dump.exe)
+ ;
+ ;(preprocessor_deps %{project_root}/bin/ocamlext.cma)
+ ;  (preprocess
+ ;   (action
+ ;    (run
+ ;     camlp5o
+ ;     %{project_root}/bin/ocamlext.cma
+ ;     pr_o.cmo
+ ;     pr_dump.cmo
+ ;     %{input-file})))
+ )
+
+(rule
+ (targets pp5+dump.exe)
+ (deps
+  (:cmas %{project_root}/bin/ocamlext.cmxa))
+ (action
+  (run
+   mkcamlp5.opt
+   ;-verbose 
+   -package
+   camlp5,camlp5.pa_o,camlp5.pr_o,camlp5.pr_dump,camlp5.extend,camlp5.quotations
+   -package
+   ppx_inline_test.runtime-lib
+   %{cmas}
+   -o
+   %{targets})))
+
+; (env
+;  (dev
+;   (flags
+;    (:standard -rectypes)))
+;  (release
+;   (flags
+;    (:standard -rectypes))))

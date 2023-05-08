@@ -1,7 +1,7 @@
   $ cat <<EOF > qml2.ml
   > open Pr_qml
   > 
-  > QML
+  > QML "qml2.qml"
   >   import "QtQuick 2.5"
   >   
   >   Rectangle
@@ -47,7 +47,7 @@ $ CAMLP5PARAM='b t' camlp5o ~/Desktop/testing_dune/pn/bin/main.cmo pr_o.cmo qml1
   $ camlp5o ./ocamlext.cma pr_o.cmo qml2.ml > asdf2.ml
   $ cat <<EOF> qml1.ml
   > open Pr_qml
-  > QML
+  > QML "qml1.qml"
   >   import "QtQuick 2.5"
   > 
   >   Rectangle {
