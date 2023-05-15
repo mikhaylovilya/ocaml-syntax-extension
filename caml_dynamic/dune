@@ -1,0 +1,30 @@
+(copy_files %{workspace_root}/caml_dynamic/stubs/*.cpp)
+
+(copy_files %{workspace_root}/caml_dynamic/stubs/*.h)
+
+(library
+ (name caml_dynamic)
+ (modules Caml_dynamic_qobj)
+ (foreign_stubs
+  (language cxx)
+  (names CamlDynamicQObj dynamicqobject)
+  (flags
+   ((:include %{workspace_root}/config/c_flags.sexp)
+    -Wall
+    -std=c++11
+    -O3
+    -I
+    .
+    -Dprivate=public
+    -fPIC)))
+ (c_library_flags
+  (:include %{workspace_root}/config/c_library_flags.sexp)))
+
+(env
+ (dev
+  (flags
+   (:standard -rectypes -warn-error -A -w -K-9-27)))
+ (release
+  (flags
+   (:standard -rectypes -warn-error -A -w -K-9-27))
+  (ocamlopt_flags -O3)))
