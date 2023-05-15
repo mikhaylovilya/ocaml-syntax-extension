@@ -40,10 +40,10 @@ jobs:
       - run: sudo add-apt-repository ppa:beineri/opt-qt-5.15.2-focal
       - run: sudo apt install qt515quickcontrols2 libgl-dev --no-install-recommends --yes
 
-      - run: ~/opt/qt515/bin/qt515-env.sh && opam depext conf-qt --yes
-      - run: ~/opt/qt515/bin/qt515-env.sh && opam install conf-qt --yes
+      - run: /opt/qt515/bin/qt515-env.sh && opam depext conf-qt --yes
+      - run: /opt/qt515/bin/qt515-env.sh && opam install conf-qt --yes
 
       - run: opam install camlp5 --yes
       - run: eval $(opam env)
-      - run: ~/opt/qt515/bin/qt515-env.sh && opam exec -- dune build
+      - run: /opt/qt515/bin/qt515-env.sh && opam exec -- dune build
       # - run: /opt/qt515/bin/qt515-env.sh && opam exec -- dune runtest --root=./ocamlext/ocamlext
