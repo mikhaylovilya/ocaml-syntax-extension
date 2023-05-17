@@ -8,11 +8,8 @@
 *)
 open Pcaml
 open Pr_qml
-(* let obj1 = {obj_name = "Rect"; obj_nodes = [QmlProp { prop_name = "x"; prop_val = Expr " \"str\" "}]} *)
 
-(* let g = Grammar.gcreate (Plexer.gmake());; *)
-(* let qexpr = Grammar.Entry.create g "expression";; *)
-
+(*todo: lookup for more than 2 lexems*)
 let checkQmlObj =
   let f stream = 
     match Stream.npeek 2 stream with
@@ -27,8 +24,23 @@ EXTEND
   GLOBAL: expr;
   expr: BEFORE "expr1"
   [["QML"; ui = STRING; imports = LIST0 import SEP ";"; q = qml; "ENDQML" 
-  -> let imps = <:expr< [do {$list:imports$}] >> in 
+   -> let imps = List.fold_right (fun x acc -> <:expr< [$x$ :: $acc$] >>) imports <:expr< [] >> in
+    (* FOLD0 (fun n1 n2 -> <:expr< $n1$ @ [$n2$] >>) <:expr< [] >> import SEP ";"; *)
      let code = <:expr< { qml_imports = $imps$; qml_obj = $q$} >> in 
+
+      (* let a = <:expr< 11 >> in 
+      let b = <:expr< 12 >> in 
+          let c = <:expr< 13 >> in
+          let lst = 
+            List.fold_left
+            (fun acc x -> 
+              <:expr< [ $x$ :: $acc$ ] >>
+              ) 
+              <:expr< [] >> 
+              [a;b;c] 
+            in 
+            let _ = <:expr< $lst$ >> *)
+
        <:expr< run ~qml_src:(code_to_string $code$) ~filename:$str:ui$ ~args:[] >>
   ]];
   import:
@@ -38,10 +50,11 @@ EXTEND
   ];
   qml:
   [
-    [cname = UIDENT; "{"; nodes = FOLD0 (fun n1 n2 -> <:expr< $n1$ @ [$n2$] >>) <:expr< [] >> node SEP ";" ; "}"
-    (* -> <:expr< Printf.printf "2222Hello, %s!" $str:cname$ >> *)
-    (* -> <:expr< $uid:cname$ >> *)
-    -> <:expr< { obj_name = $str:cname$; obj_nodes = $nodes$ } >>
+    [cname = UIDENT; "{"; nodes = LIST0 node SEP ";" ; "}"
+    -> 
+      (* nodes = FOLD0 (fun n1 n2 -> <:expr< [$n2$ :: $n1$] >>) <:expr< [] >> node SEP ";" *)
+       let ns = List.fold_right (fun x acc -> <:expr< [$x$ :: $acc$] >>) nodes <:expr< [] >> in
+        <:expr< { obj_name = $str:cname$; obj_nodes = $ns$ } >>
     ]
   ];
   propid:

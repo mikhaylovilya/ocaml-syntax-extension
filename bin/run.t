@@ -48,7 +48,8 @@ $ CAMLP5PARAM='b t' camlp5o ~/Desktop/testing_dune/pn/bin/main.cmo pr_o.cmo qml1
   $ cat <<EOF> qml1.ml
   > open Pr_qml
   > QML "qml1.qml"
-  >   import "QtQuick 2.5"
+  >   import "QtQuick 2.5";
+  >   import "QtQuick.Controls 1.0"
   > 
   >   Rectangle {
   >     id: root;
@@ -70,7 +71,7 @@ $ CAMLP5PARAM='b t' camlp5o ~/Desktop/testing_dune/pn/bin/main.cmo pr_o.cmo qml1
   $ camlp5o -I . ocamlext.cma pr_o.cmo qml2.ml > asdf0.ml
  $ camlp5o -I . ocamlext.cma pr_o.cmo qml2.ml
   $ camlp5o -I . ocamlext.cma pr_o.cmo qml1.ml > asdf.ml
-  $ ocamlopt -o asdf pr_qml.ml asdf.ml
+  $ ocamlopt -o asdf pr_qml.ml asdf.ml -dsource
   $ ./asdf
   qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
 $ camlp5o ./ocamlext.cma pr_o.cmo qml1.ml | ocaml

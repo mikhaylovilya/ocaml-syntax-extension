@@ -32,9 +32,9 @@ and obj_to_string q_obj tp =
 
 let code_to_string q_code =
   List.fold_right
-    (fun i1 i2 ->
-      if i2 = "" then "import " ^ i1 ^ "\n"
-      else "import " ^ i1 ^ "\n" ^ "import " ^ i2 ^ "\n")
+    (fun x acc ->
+      if acc = "" then "import " ^ x ^ "\n"
+      else "import " ^ x ^ "\n" ^ acc ^ "\n")
     q_code.qml_imports ""
   ^ obj_to_string q_code.qml_obj 0
 
