@@ -3,8 +3,9 @@
 open Ocamlext.Pr_qml
 
 QML "qmltest.qml"
-  import "QtQuick 2.5"
-  
+  import "QtQuick 2.5";
+  import "QtQuick.Controls 1.0"
+
   Rectangle {
     id: root;
     width: 640;
@@ -16,35 +17,4 @@ QML "qmltest.qml"
       text: root.width + root.height
     }
   }
-
-
 ENDQML;;
-
-(* let _ =
-   run
-     (code_to_string
-        {
-          qml_imports = [ "QtQuick" ];
-          qml_obj =
-            {
-              obj_name = "Rectangle";
-              obj_nodes =
-                [
-                  (QmlProp { prop_name = "id"; prop_val = Expr "root" };
-                   QmlProp { prop_name = "width"; prop_val = Expr "640" };
-                   QmlProp { prop_name = "height"; prop_val = Expr "480" };
-                   QmlObj
-                     {
-                       obj_name = "Text";
-                       obj_nodes =
-                         [
-                           QmlProp
-                             {
-                               prop_name = "text";
-                               prop_val = Expr "\"hello, nextdemo!\"";
-                             };
-                         ];
-                     });
-                ];
-            };
-        }) *)
