@@ -19,7 +19,7 @@
  (name ocamlext)
  (synopsis "A short synopsis")
  (description "A longer description")
- (depends ocaml dune)
+ (depends ocaml dune camlp5 base stdio dune-configurator lablqml)
  (tags
   (topics "to describe" your project)))
 

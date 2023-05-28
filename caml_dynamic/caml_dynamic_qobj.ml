@@ -21,8 +21,7 @@ end = struct
 
   let create () = create_stub ()
 
-  external create_func_stub : t -> string -> (unit -> unit) -> unit
-    = "caml_create_func"
+  external create_func_stub : t -> string -> (unit -> unit) -> unit = "caml_create_func"
 
   let create_func t ~name ~f = create_func_stub t name f
   let to_lablqml_cppobj : t -> t mycppobj = fun x -> x

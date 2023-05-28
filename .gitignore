@@ -1,6 +1,4 @@
 _build
 nextdemo
 qmltest.qml
-caml_dynamic/stubs/*.h
-caml_dynamic/stubs/*.cpp
 .vscode

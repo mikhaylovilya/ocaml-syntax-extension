@@ -12,6 +12,11 @@ bug-reports: "https://github.com/username/reponame/issues"
 depends: [
   "ocaml"
   "dune" {>= "3.6"}
+  "camlp5"
+  "base"
+  "stdio"
+  "dune-configurator"
+  "lablqml"
   "odoc" {with-doc}
 ]
 build: [
