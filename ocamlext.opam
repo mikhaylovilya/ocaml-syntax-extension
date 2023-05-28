@@ -16,7 +16,6 @@ depends: [
   "base"
   "stdio"
   "dune-configurator"
-  "lablqml"
   "odoc" {with-doc}
 ]
 build: [
