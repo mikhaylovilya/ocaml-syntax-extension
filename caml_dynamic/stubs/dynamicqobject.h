@@ -24,29 +24,31 @@
 #ifndef DYNAMICQOBJECT_H
 #define DYNAMICQOBJECT_H
 
-#include <QHash>
-#include <QList>
-#include <QMetaObject>
-#include <QObject>
+#include <QtCore/QHash>
+#include <QtCore/QList>
+#include <QtCore/QMetaObject>
+#include <QtCore/QObject>
 
-class DynamicSlot 
+class DynamicSlot
 {
 public:
     virtual void call(QObject *sender, void **arguments) = 0;
+    virtual ~DynamicSlot() {}
 };
 
-class DynamicQObject: public QObject
+class DynamicQObject : public QObject
 {
 public:
-    DynamicQObject(QObject *parent = 0) : QObject(parent) { }
+    DynamicQObject(QObject *parent = 0) : QObject(parent) {}
 
     virtual int qt_metacall(QMetaObject::Call c, int id, void **arguments);
 
-    bool emitDynamicSignal(char *signal, void **arguments);	
+    bool emitDynamicSignal(char *signal, void **arguments);
     bool connectDynamicSlot(QObject *obj, char *signal, char *slot);
     bool connectDynamicSignal(char *signal, QObject *obj, char *slot);
 
-    virtual DynamicSlot *createSlot(char *slot) = 0;    
+    virtual DynamicSlot *createSlot(char *slot) = 0;
+    virtual ~DynamicQObject() {}
 
 private:
     QHash<QByteArray, int> slotIndices;

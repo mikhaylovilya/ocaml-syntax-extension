@@ -8,7 +8,32 @@ extern "C"
 #include <caml/callback.h>
 }
 
-Wrapper::Wrapper(QObject *parent, CamlDynamicQObj *backend) : QObject(parent), backend(backend) {}
+CamlDynamicQObj::CamlDynamicQObj(QObject *parent) : DynamicQObject(parent) {}
+DynamicSlot *CamlDynamicQObj::createSlot(char *slot)
+{
+    return new CamlSlot(this);
+}
+
+CamlSlot::CamlSlot(CamlDynamicQObj *parent)
+{
+    Q_ASSERT(parent != 0);
+}
+CamlSlot::CamlSlot(CamlDynamicQObj *parent, value _func) : _camlSlot(_func)
+{
+    Q_ASSERT(parent != 0);
+}
+
+void CamlSlot::call(QObject *sender, void **arguments) {}
+
+CamlSlot::~CamlSlot()
+{
+    if (_camlSlot)
+        caml_remove_global_root(&_camlSlot);
+}
+
+Wrapper::Wrapper(QObject *parent, CamlDynamicQObj *backend) : QObject(parent), backend(backend)
+{
+}
 bool Wrapper::callConnectDynamicSlot(QObject *obj, QString signal, QString slot)
 {
     QByteArray byteSignal = signal.toLocal8Bit();
@@ -39,4 +64,8 @@ extern "C" value caml_create_camldynamicqobj(value _unit)
     CAMLreturn(_ans);
 }
 
-// extern "C" value
+extern "C" value caml_create_func(value _handler, value _name, value _func)
+{
+    CAMLparam3(_handler, _name, _func);
+    CAMLreturn(Val_unit);
+}

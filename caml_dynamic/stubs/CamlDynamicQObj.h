@@ -7,18 +7,20 @@
 
 class CamlDynamicQObj : public DynamicQObject
 {
-    value _camlSlot;
-
 public:
-    CamlDynamicQObj(QObject *parent) : DynamicQObject(parent) {}
+    CamlDynamicQObj(QObject *parent);
     DynamicSlot *createSlot(char *slot);
 };
 
 class CamlSlot : public DynamicSlot
 {
+    value _camlSlot;
+
 public:
-    CamlSlot(CamlDynamicQObj *parent) { Q_ASSERT(parent != 0); }
+    CamlSlot(CamlDynamicQObj *parent);
+    CamlSlot(CamlDynamicQObj *parent, value _func);
     void call(QObject *sender, void **arguments);
+    ~CamlSlot();
 };
 
 class Wrapper : public QObject
@@ -34,4 +36,4 @@ private:
     CamlDynamicQObj *backend;
 };
 
-#endif "QDYNAMIC_H"
+#endif //"QDYNAMIC_H"

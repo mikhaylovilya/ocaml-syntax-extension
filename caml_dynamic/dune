@@ -2,13 +2,23 @@
 
 (copy_files %{workspace_root}/caml_dynamic/stubs/*.h)
 
+(env
+ (_
+  (flags
+   (-rectypes -warn-error -A -w -K-9-27)))
+ ;  (release
+ ;   (flags
+ ;    (:standard -rectypes -warn-error -A -w -K-9-27))
+ ;   (ocamlopt_flags -O3))
+ )
+
 (library
  (name caml_dynamic)
  (modules Caml_dynamic_qobj)
  (libraries lablqml)
  (foreign_stubs
   (language cxx)
-  (names CamlDynamicQObj dynamicqobject)
+  (names moc_CamlDynamicQObj CamlDynamicQObj dynamicqobject)
   (flags
    ((:include %{workspace_root}/config/c_flags.sexp)
     -Wall
@@ -18,14 +28,19 @@
     .
     -Dprivate=public
     -fPIC)))
+ (ocamlopt_flags (-rectypes))
  (c_library_flags
   (:include %{workspace_root}/config/c_library_flags.sexp)))
 
-(env
- (dev
-  (flags
-   (:standard -rectypes -warn-error -A -w -K-9-27)))
- (release
-  (flags
-   (:standard -rectypes -warn-error -A -w -K-9-27))
-  (ocamlopt_flags -O3)))
+(rule
+ (targets moc_CamlDynamicQObj.cpp)
+ (deps CamlDynamicQObj.h)
+ (action
+  (run %{read:../config/moc.sexp} %{deps} -o %{targets})))
+
+; (alias
+;  (name default)
+;  (deps
+;   %{project_root}/config/moc.sexp
+;   libcaml_dynamic_stubs.a
+;   caml_dynamic.cmxa))
