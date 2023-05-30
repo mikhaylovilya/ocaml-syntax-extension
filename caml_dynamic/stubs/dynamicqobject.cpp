@@ -104,7 +104,7 @@ void DynamicQObject::addCustomSlot(QString slotSignature, DynamicSlot *camlSlot)
     {
         slotId = slotList.size();
         slotIndices[theSlot] = slotId;
-        slotList.append(createSlot(theSlot.data()));
-        qDebug("went on ::addCustomSlot");
+        slotList.append(camlSlot);
+        // qDebug("went on ::addCustomSlot");
     }
 }
