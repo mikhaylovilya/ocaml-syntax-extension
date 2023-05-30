@@ -37,6 +37,7 @@ bool DynamicQObject::connectDynamicSlot(QObject *obj, char *signal, char *slot)
     int slotId = slotIndices.value(theSlot, -1);
     if (slotId < 0)
     {
+        qDebug("went on ::connectDynamicSlot");
         slotId = slotList.size();
         slotIndices[theSlot] = slotId;
         slotList.append(createSlot(theSlot.data()));
@@ -90,5 +91,20 @@ bool DynamicQObject::emitDynamicSignal(char *signal, void **arguments)
     else
     {
         return false;
+    }
+}
+
+void DynamicQObject::addCustomSlot(QString slotSignature, DynamicSlot *camlSlot)
+{
+    QByteArray byteSlot = slotSignature.toLocal8Bit();
+    char *charSlot = byteSlot.data();
+    QByteArray theSlot = QMetaObject::normalizedSignature(charSlot) + "()"; // need some sophisticated way to determine args
+    int slotId = slotIndices.value(theSlot, -1);
+    if (slotId < 0)
+    {
+        slotId = slotList.size();
+        slotIndices[theSlot] = slotId;
+        slotList.append(createSlot(theSlot.data()));
+        qDebug("went on ::addCustomSlot");
     }
 }

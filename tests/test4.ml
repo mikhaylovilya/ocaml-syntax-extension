@@ -3,16 +3,15 @@ open Caml_dynamic.Caml_dynamic_qobj
 
 let test1 () =
   let app, engine = create_qapplication Sys.argv in
-  let single = CamlDynamicQObj.create () in
-  let _ =
+  (* let single = CamlDynamicQObj.create () in *)
+  let single =
     CamlDynamicQObj.create_func
-      single
       ~f:(fun () -> Printf.printf "single func in OCaml\n%!")
-      ~name:"runner"
+      ~name:"increment"
   in
   set_context_property
     ~ctx:(get_view_exn ~name:"rootContext")
-    ~name:"runner"
+    ~name:"wrapper"
     (CamlDynamicQObj.to_lablqml_cppobj single);
   let w = loadQml "./tests/test4.qml" engine in
   assert (w <> None);

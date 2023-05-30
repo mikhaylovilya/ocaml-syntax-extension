@@ -32,8 +32,9 @@ public:
     Q_INVOKABLE bool callConnectDynamicSlot(QObject *obj, QString signal, QString slot);
     Q_INVOKABLE bool callConnectDynamicSignal(QString signal, QObject *obj, QString slot);
 
-private:
     CamlDynamicQObj *backend;
+
+private:
 };
 
 #endif //"QDYNAMIC_H"

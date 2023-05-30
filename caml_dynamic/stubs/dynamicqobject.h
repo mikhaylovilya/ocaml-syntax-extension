@@ -48,6 +48,7 @@ public:
     bool connectDynamicSignal(char *signal, QObject *obj, char *slot);
 
     virtual DynamicSlot *createSlot(char *slot) = 0;
+    void addCustomSlot(QString slotSignature, DynamicSlot *camlSlot);
     virtual ~DynamicQObject() {}
 
 private:

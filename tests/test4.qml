@@ -1,5 +1,5 @@
 import QtQuick 2.1
-import QtQuick.Controls 1.0
+import QtQuick.Controls 2.15
 
 ApplicationWindow {
     id: root
@@ -8,20 +8,25 @@ ApplicationWindow {
     visible: true
 
     Component.onCompleted: {
-        console.log(runner)
+        console.log(wrapper);
+        console.log(wrapper.callConnectDynamicSlot(incrementBtn, "clicked()", "increment()"));
     }
     Text {
         text: "test4"
     }
-
-    Timer {
-         interval: 5000;
-         running: true;
-         repeat: false
-         onTriggered: {
-            runner.run();
-            Qt.quit();
-         }
+    // Timer {
+    //      interval: 5000;
+    //      running: true;
+    //      repeat: false
+    //      onTriggered: {
+    //         //wrapper.run();
+    //         Qt.quit();
+    //      }
+    // }
+    Button {
+        id: incrementBtn
+        anchors.centerIn: parent
+        text: "Increment"
+        font.pointSize: 18
     }
-
 }
