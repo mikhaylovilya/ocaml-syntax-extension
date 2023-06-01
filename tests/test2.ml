@@ -4,7 +4,7 @@ open Ocamlext.Pr_qml
 open Lablqml
 open Caml_dynamic.Caml_dynamic_qobj
 
-QML "qmltest.qml"
+QML "../tests/test2.qml"
   import "QtQuick 2.5";
   import "QtQuick.Controls 1.0"
 

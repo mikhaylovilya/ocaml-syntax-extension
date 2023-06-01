@@ -20,7 +20,7 @@
 (cram
  (deps
   pr_qml.ml
-  ./.ocamlext.objs/byte/ocamlext.cmi
+  ;   ./.ocamlext.objs/byte/ocamlext.cmi
   ocamlext.cma
   ocamlext.cmxa
   ../tests/test1.exe
@@ -29,7 +29,8 @@
   ../tests/test3.qml
   ../tests/test4.exe
   ../tests/test4.qml
-  ;   ../tests/test5.exe
+  ../tests/test5.exe
+  ../tests/test5.ml
   ;pp5+ocamlext+o.exe
   ))
 

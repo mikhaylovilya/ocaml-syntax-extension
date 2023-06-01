@@ -7,13 +7,15 @@ ApplicationWindow {
     height: 480
     visible: true
 
-    signal call_caml_slot()
+    signal qml_signal1()
+    // signal qml_signal2()
 
     Component.onCompleted: {
         // console.log(wrapper);
         // console.log(wrapper.callConnectDynamicSlot(root, "call_caml_slot()", "increment()"));
-        wrapper.callConnectDynamicSlot(root, "call_caml_slot()", "increment()");
-        Qt.quit();
+        wrapper.callConnectDynamicSlot(root, "qml_signal1()", "increment()");
+        //wrapper1.callConnectDynamicSlot(root, "qml_signal2()", "pr()");
+        //Qt.quit();
     }
     Text {
         text: "test4"
@@ -23,7 +25,7 @@ ApplicationWindow {
     //     anchors.centerIn: parent
     //     text: "Increment"
     //     font.pointSize: 18
-    //     onClicked: call_caml_slot()
+    //     onClicked: qml_signal2();
     // }
 
     Timer {
@@ -31,7 +33,7 @@ ApplicationWindow {
          running: true;
          repeat: false
          onTriggered: {
-             call_caml_slot()
+             qml_signal1();
              Qt.quit();
          }
     }

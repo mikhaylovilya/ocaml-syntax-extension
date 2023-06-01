@@ -4,10 +4,10 @@ open Stdio *)
 open Lablqml
 open Caml_dynamic.Caml_dynamic_qobj
 
-type qml_slot =
+(* type qml_slot =
   { slot_name : string
   ; slot_body : MLast.expr
-  }
+  } *)
 
 type qml_obj =
   { obj_name : string
@@ -17,7 +17,7 @@ type qml_obj =
 and qml_node =
   | QmlProp of qml_prop
   | QmlObj of qml_obj
-  | QmlSlot of qml_slot
+  | QmlSlot of string
 
 and qml_prop =
   { prop_name : string
@@ -50,6 +50,7 @@ let rec prop_to_string q_prop tp =
 
 and obj_to_string q_obj tp =
   (*tp - tabulation parameter*)
+  (*np - naming parameter*)
   let base = String.concat "" [ tab tp; q_obj.obj_name; "\n"; tab tp; "{"; "\n" ] in
   let rec f nodes tp =
     match nodes with
@@ -57,7 +58,12 @@ and obj_to_string q_obj tp =
     | nodeshd :: nodestl ->
       (function
        | QmlProp qp -> prop_to_string qp tp
-       | QmlObj qo -> obj_to_string qo tp)
+       | QmlObj qo ->
+         obj_to_string qo tp
+         (* | QmlSlot qs ->
+         prop_to_string
+           { prop_name = qs; prop_val = Expr ("" ^ Int.to_string (np + 1)) }
+           tp*))
         nodeshd
       ^ f nodestl tp
   in

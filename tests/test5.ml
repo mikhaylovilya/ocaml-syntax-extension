@@ -4,7 +4,7 @@ open Ocamlext.Pr_qml
 open Caml_dynamic.Caml_dynamic_qobj
 open Lablqml
 
-QML "qmltest.qml"
+QML "../tests/test51.qml"
   import "QtQuick 2.5";
   import "QtQuick.Controls 2.5"
 
@@ -36,3 +36,25 @@ QML "qmltest.qml"
     }
   }
 ENDQML;;
+
+(* QML "test51.qml"
+  import "QtQuick 2.5";
+  import "QtQuick.Controls 1.0"
+ 
+  Rectangle {
+    id: root;
+    width: 680;
+    height: 480;
+    
+    gradient: Gradient 
+    {
+      GradientStop { position: 0.0; color: "black" };
+      GradientStop { position: 1.0; color: "white" }
+    };
+    Text {
+      x: parent.width / 2;
+      y: parent.height / 2;
+      text: "Hello, World! X coord:" + x + " Y coord: " + y
+    }
+  }
+ENDQML;; *)
