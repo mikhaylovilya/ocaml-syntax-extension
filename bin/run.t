@@ -1,4 +1,5 @@
-  $ dune exec ../tests/test1.exe 2>&1 | egrep -v "Gtk-Message|\":/q|qt.qpa.plugin|startup_stubs.cpp"
+  $ dune exec ../tests/test1.exe 
+2>&1 | egrep -v "Gtk-Message|\":/q|qt.qpa.plugin|startup_stubs.cpp"
   
   Demo used to test ADT for qml code in module pr_qml!
   import QtQuick 2.5
@@ -27,13 +28,16 @@
   		height: 60
   	}
   }
-  $ dune exec ../tests/test2.exe 2>&1 | egrep -v "Gtk-Message|\":/q|qt.qpa.plugin|startup_stubs.cpp"
+  $ dune exec ../tests/test2.exe 
+2>&1 | egrep -v "Gtk-Message|\":/q|qt.qpa.plugin|startup_stubs.cpp"
   single func in OCaml
   quitting gui application
-  $ dune exec ../tests/test3.exe 2>&1 | egrep -v "Gtk-Message|\":/q|qt.qpa.plugin|startup_stubs.cpp"
+  $ dune exec ../tests/test3.exe 
+2>&1 | egrep -v "Gtk-Message|\":/q|qt.qpa.plugin|startup_stubs.cpp"
   single func in OCaml
   quitting gui application
-  $ dune exec ../tests/test4.exe 2>&1 | egrep -v "Gtk-Message|\":/q|qt.qpa.plugin|startup_stubs.cpp"
+  $ dune exec ../tests/test4.exe 
+2>&1 | egrep -v "Gtk-Message|\":/q|qt.qpa.plugin|startup_stubs.cpp"
   single func in OCaml
   quitting gui application
 $ dune exec ../tests/test5.exe 
