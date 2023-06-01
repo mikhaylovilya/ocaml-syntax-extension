@@ -44,7 +44,7 @@ jobs:
       - run: /opt/qt515/bin/qt515-env.sh && opam depext conf-qt --yes
       - run: /opt/qt515/bin/qt515-env.sh && opam install conf-qt --yes
 
-      - run: /opt/qt515/bin/qt515-env.sh && opam pin add lablqml . --no-action    
+      # - run: /opt/qt515/bin/qt515-env.sh && opam pin add lablqml . --no-action    
       - run: /opt/qt515/bin/qt515-env.sh && opam depext lablqml --yes
       - run: /opt/qt515/bin/qt515-env.sh && opam install lablqml --yes
 
