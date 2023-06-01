@@ -106,8 +106,8 @@ extern "C" value caml_create_func(value _name, value _func)
     //*((CamlDynamicQObj **)&Field(_ans, 0)) = new CamlDynamicQObj(0);
     CamlDynamicQObj *camlObj = new CamlDynamicQObj(nullptr);
 
-    printf("%p\n", _func);
-    fflush(stdout);
+    // printf("%p\n", _func);
+    // fflush(stdout);
 
     CamlSlot *camlSlot = new CamlSlot(camlObj, _func);
     QString slotSignature = QString(String_val(_name));

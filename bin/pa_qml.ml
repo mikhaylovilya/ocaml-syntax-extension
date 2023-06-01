@@ -24,7 +24,26 @@ EXTEND
   GLOBAL: expr;
   expr: BEFORE "expr1"
   [["QML"; ui = STRING; imports = LIST0 import SEP ";"; q = qml; "ENDQML" 
-   -> let imps = List.fold_right (fun x acc -> <:expr< [$x$ :: $acc$] >>) imports <:expr< [] >> in
+   -> let qml_startup = <:expr<
+   let (app, engine) = create_qapplication Sys.argv in
+   let single =
+     CamlDynamicQObj.create_func
+       ~f:(fun () -> Printf.printf "single func in OCaml\n%!")
+       ~name:"increment"
+   in
+   let _ = set_context_property
+     ~ctx:(get_view_exn ~name:"rootContext")
+     ~name:"wrapper"
+     (CamlDynamicQObj.to_lablqml_cppobj single) in
+   let w = loadQml "../tests/test4.qml" engine in
+   let _ = assert (w <> None) in
+   let _w =
+     match w with
+     [ Some w -> w
+     | None -> failwith "can't create window"]
+   in
+   QGuiApplication.exec app >> in
+     let imps = List.fold_right (fun x acc -> <:expr< [$x$ :: $acc$] >>) imports <:expr< [] >> in
     (* FOLD0 (fun n1 n2 -> <:expr< $n1$ @ [$n2$] >>) <:expr< [] >> import SEP ";"; *)
      let code = <:expr< { qml_imports = $imps$; qml_obj = $q$} >> in 
 
@@ -41,7 +60,7 @@ EXTEND
             in 
             let _ = <:expr< $lst$ >> *)
 
-       <:expr< run ~qml_src:(code_to_string $code$) ~filename:$str:ui$ ~args:[] >>
+       <:expr< let _ = run ~qml_src:(code_to_string $code$) ~filename:$str:ui$ ~args:["--quit"] in $qml_startup$>>
   ]];
   import:
   [
@@ -65,7 +84,7 @@ EXTEND
   propval:
   [
     [checkQmlObj; pv = qml -> <:expr< (QmlObjVal $pv$) >>] |
-    [pv = expr LEVEL "expr1" 
+    [pv = expr LEVEL "expr1"
     -> let str_expr = Printf.sprintf "%s" (Eprinter.apply pr_expr Pprintf.empty_pc pv) in
        let str_expr = str_expr |> String.escaped in
       <:expr< (Expr $str:str_expr$) >>]
@@ -77,7 +96,11 @@ EXTEND
   node:
   [
     [checkQmlObj; nodetype = qml -> <:expr< (QmlObj $nodetype$) >>] |
-    [nodetype = prop -> <:expr< (QmlProp $nodetype$) >>]
+    [nodetype = prop -> <:expr< (QmlProp $nodetype$) >>] | [nodetype = slot -> <:expr< (QmlSlot $nodetype$) >>]
+  ];
+  slot:
+  [
+    ["slot"; slot_name = UIDENT; ":"; "{"; slot_body = expr; "}" -> <:expr< { slot_name = $str:slot_name$; slot_body = $slot_body$}  >> ]
   ];
 END
 

@@ -1,6 +1,14 @@
 (* open Base
 open Stdio *)
 
+open Lablqml
+open Caml_dynamic.Caml_dynamic_qobj
+
+type qml_slot =
+  { slot_name : string
+  ; slot_body : MLast.expr
+  }
+
 type qml_obj =
   { obj_name : string
   ; obj_nodes : qml_node list
@@ -9,6 +17,7 @@ type qml_obj =
 and qml_node =
   | QmlProp of qml_prop
   | QmlObj of qml_obj
+  | QmlSlot of qml_slot
 
 and qml_prop =
   { prop_name : string
@@ -76,7 +85,87 @@ let print_to_file ~qml_src ~filename =
 let run ~qml_src ~filename ~args =
   (*filename: "qmltest.qml" args: ["--quit"]*)
   let _ = print_to_file ~qml_src ~filename in
-  Stdlib.Sys.command
-    ("qmlscene " ^ filename ^ List.fold_right (fun a1 a2 -> a1 ^ a2) args "")
+  let command =
+    "qmlscene " ^ filename ^ " " ^ List.fold_right (fun a1 a2 -> a1 ^ " " ^ a2) args ""
+  in
+  (* let _ = Printf.printf "%s" command in *)
+  Stdlib.Sys.command command
 ;;
-(*--quit*)
+
+(* $ cat <<EOF > qml2.ml
+> open Pr_qml
+> 
+> QML "qml2.qml"
+>   import "QtQuick 2.5"
+>   
+>   Rectangle
+>   {
+>       id : rect1;
+>       x : 20; y : 30;
+>      
+>       header : Button
+>       {
+>         src : "src";
+>         anotherprop : "90";
+>         Image {
+>           x : anchor.bs;
+>           y : anchor.bs
+>         }
+>       };
+> 
+>       ToolButton {
+>         text: "Open";
+>         iconName: "document-open"
+>       };
+> 
+>       Border.color : "blue";
+>       BUTTON 
+>       {
+>         onClick : "dosmth"
+>       };
+> 
+>       IMAGE
+>       {
+>         id: img1;
+>         x : 40;
+> 
+>         y : 40
+>       };
+> 
+>       y : 0 + img1.x
+>   } 
+> ENDQML;;
+> EOF
+$ CAMLP5PARAM='b t' camlp5o ~/Desktop/testing_dune/pn/bin/main.cmo pr_o.cmo qml1.ml
+$ eval $(opam env)
+$ camlp5o ./ocamlext.cma pr_o.cmo qml2.ml > asdf2.ml
+$ cat <<EOF> qml1.ml
+> open Pr_qml
+> QML "qml1.qml"
+>   import "QtQuick 2.5";
+>   import "QtQuick.Controls 1.0"
+> 
+>   Rectangle {
+>     id: root;
+>     width: 680;
+>     height: 480;
+>     
+>     gradient: Gradient 
+>     {
+>       GradientStop { position: 0.0; color: "black" };
+>       GradientStop { position: 1.0; color: "white" }
+>     };
+>     Text {
+>       x: parent.width / 2;
+>       y: parent.height / 2;
+>       text: "Hello, World! X coord:" + x + " Y coord: " + y
+>     }
+>   }
+> ENDQML;;
+$ camlp5o -I . ocamlext.cma pr_o.cmo qml2.ml > asdf0.ml
+$ camlp5o -I . ocamlext.cma pr_o.cmo qml2.ml
+$ camlp5o -I . ocamlext.cma pr_o.cmo qml1.ml > asdf.ml
+$ ocamlopt -o asdf pr_qml.ml asdf.ml -dsource
+$ ./asdf
+qt.qpa.plugin: Could not find the Qt platform plugin "wayland" in ""
+$ camlp5o ./ocamlext.cma pr_o.cmo qml1.ml | ocaml *)
