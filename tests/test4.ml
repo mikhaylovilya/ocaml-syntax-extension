@@ -13,7 +13,7 @@ let test1 () =
     ~ctx:(get_view_exn ~name:"rootContext")
     ~name:"wrapper"
     (CamlDynamicQObj.to_lablqml_cppobj single);
-  let w = loadQml "./tests/test4.qml" engine in
+  let w = loadQml "../tests/test4.qml" engine in
   assert (w <> None);
   let _w =
     match w with

@@ -8,7 +8,7 @@ ApplicationWindow {
     visible: true
 
     Timer {
-         interval: 5000;
+         interval: 50;
          running: true;
          repeat: false
          onTriggered: {

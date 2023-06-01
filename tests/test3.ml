@@ -7,7 +7,7 @@ let test1 () =
     ~ctx:(get_view_exn ~name:"rootContext")
     ~name:"runner"
     (SingleFunc.handler single);
-  let w = loadQml "./tests/test3.qml" engine in
+  let w = loadQml "../tests/test3.qml" engine in
   assert (w <> None);
   let _w =
     match w with

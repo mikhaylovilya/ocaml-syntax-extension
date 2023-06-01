@@ -50,4 +50,4 @@ jobs:
       # - run: eval $(opam env)
       - run: /opt/qt515/bin/qt515-env.sh && opam install . --deps-only --with-test
       - run: /opt/qt515/bin/qt515-env.sh && opam exec -- dune build
-      # - run: /opt/qt515/bin/qt515-env.sh && opam exec -- dune runtest --root=./ocamlext/ocamlext
+      - run: /opt/qt515/bin/qt515-env.sh && opam exec -- dune runtest 

@@ -2,7 +2,7 @@
  (name ocamlext)
  (public_name ocamlext)
  (modules Pa_qml Pr_qml)
- (libraries camlp5)
+ (libraries camlp5 logger lablqml caml_dynamic)
  (preprocess
   (action
    (run %{project_root}/bin/pp5+dump.byte %{input-file}))))
@@ -23,6 +23,13 @@
   ./.ocamlext.objs/byte/ocamlext.cmi
   ocamlext.cma
   ocamlext.cmxa
+  ../tests/test1.exe
+  ../tests/test2.exe
+  ../tests/test3.exe
+  ../tests/test3.qml
+  ../tests/test4.exe
+  ../tests/test4.qml
+  ;   ../tests/test5.exe
   ;pp5+ocamlext+o.exe
   ))
 

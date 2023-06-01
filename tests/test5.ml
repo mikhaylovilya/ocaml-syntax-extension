@@ -1,12 +1,12 @@
 [@@@ocamlformat "disable"]  (* TODO: check *)
 
 open Ocamlext.Pr_qml
-open Lablqml
 open Caml_dynamic.Caml_dynamic_qobj
+open Lablqml
 
 QML "qmltest.qml"
   import "QtQuick 2.5";
-  import "QtQuick.Controls 1.0"
+  import "QtQuick.Controls 2.5"
 
   Rectangle {
     id: root;
@@ -14,16 +14,25 @@ QML "qmltest.qml"
     height: 480;
 
     Text {
-      x: parent.width / 2;
-      y: 0;
+      id: label1;
+      x: label2.x;
+      anchors.bottom: label2.top;
+      font.pointSize: 14;
       text: root.width + root.height
     };
 
     Text {
+      id: label2;
       x: parent.width / 2;
       y: root.height / 2;
-      text: "TEST2";
-      font.pointSize: 20
+      anchors.centerIn: parent;
+      font.pointSize: 18;
+      text: "Test 5"
+    };
+
+    Button {
+      id: btn1;
+      text: "Do_smth()"
     }
   }
 ENDQML;;
