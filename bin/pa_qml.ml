@@ -20,21 +20,45 @@ let checkQmlObj =
   Grammar.Entry.of_parser gram "checkQmlObj" (fun strm -> if f strm then () else raise Stream.Failure)
 ;;
 
+let checkSlot =
+  let f stream = 
+    match Stream.npeek 2 stream with
+    | [(smth1, "slot");(smth2, paren)] -> 
+      (* (Char.code uid.[0] > 64 || Char.code uid.[0] < 91) && paren.[0] = '{' *) true
+    | _ -> false
+  in
+  Grammar.Entry.of_parser gram "checkSlot" (fun strm -> if f strm then () else raise Stream.Failure)
+;;
+
+let counter = ref 0;;
+
+let next_val = 
+  fun () ->
+    counter := (!counter) + 1;
+    !counter;;
+
 EXTEND
   GLOBAL: expr;
   expr: BEFORE "expr1"
   [["QML"; ui = STRING; imports = LIST0 import SEP ";"; q = qml; "ENDQML" 
-   -> let qml_startup = <:expr<
+   -> let s_infs, qqml = q in
+
+      let handlers = List.map (fun number, handler 
+      -> let str_number = Int.to_string number in 
+      <:expr< let single =
+        (CamlDynamicQObj.create_func(
+          ~name:(String.concat ("" ["caml_slot"; $str:str_number$]))
+          ~f:(fun () -> $handler$)))
+      in
+      set_context_property
+        ~ctx:(get_view_exn ~name:"rootContext")
+        ~name:(String.concat "" ["wrapper"; $str:str_number$])
+        (CamlDynamicQObj.to_lablqml_cppobj single) >>) s_infs
+    in
+
+    let qml_startup = <:expr<
    let (app, engine) = create_qapplication Sys.argv in
-   let single =
-     CamlDynamicQObj.create_func
-       ~f:(fun () -> Printf.printf "single func in OCaml\n%!")
-       ~name:"increment"
-   in
-   let _ = set_context_property
-     ~ctx:(get_view_exn ~name:"rootContext")
-     ~name:"wrapper"
-     (CamlDynamicQObj.to_lablqml_cppobj single) in
+   let _ = do { $list:handlers$ } in
    let w = loadQml "../tests/test4.qml" engine in
    let _ = assert (w <> None) in
    let _w =
@@ -45,7 +69,7 @@ EXTEND
    QGuiApplication.exec app >> in
      let imps = List.fold_right (fun x acc -> <:expr< [$x$ :: $acc$] >>) imports <:expr< [] >> in
     (* FOLD0 (fun n1 n2 -> <:expr< $n1$ @ [$n2$] >>) <:expr< [] >> import SEP ";"; *)
-     let code = <:expr< { qml_imports = $imps$; qml_obj = $q$} >> in 
+     let code = <:expr< { qml_imports = $imps$; qml_obj = $qqml$} >> in 
 
       (* let a = <:expr< 11 >> in 
       let b = <:expr< 12 >> in 
@@ -71,9 +95,14 @@ EXTEND
   [
     [cname = UIDENT; "{"; nodes = LIST0 node SEP ";" ; "}"
     -> 
+      let slots = List.filter_map (fun nd -> match nd with 
+      | [], _ -> None
+      | x, _ -> Some x) nodes in
+      let s_infs = List.concat slots in
+      let records = List.map (fun (opt, record) -> record) nodes in
       (* nodes = FOLD0 (fun n1 n2 -> <:expr< [$n2$ :: $n1$] >>) <:expr< [] >> node SEP ";" *)
-       let ns = List.fold_right (fun x acc -> <:expr< [$x$ :: $acc$] >>) nodes <:expr< [] >> in
-        <:expr< { obj_name = $str:cname$; obj_nodes = $ns$ } >>
+       let ns = List.fold_right (fun x acc -> <:expr< [$x$ :: $acc$] >>) records <:expr< [] >> in
+        (s_infs, <:expr< { obj_name = $str:cname$; obj_nodes = $ns$ } >>)
     ]
   ];
   propid:
@@ -83,24 +112,40 @@ EXTEND
   ];
   propval:
   [
-    [checkQmlObj; pv = qml -> <:expr< (QmlObjVal $pv$) >>] |
+    [checkQmlObj; pv = qml 
+    -> let s_infs, qqml = pv in
+      (s_infs, <:expr< (QmlObjVal $qqml$) >>)] |
     [pv = expr LEVEL "expr1"
     -> let str_expr = Printf.sprintf "%s" (Eprinter.apply pr_expr Pprintf.empty_pc pv) in
        let str_expr = str_expr |> String.escaped in
-      <:expr< (Expr $str:str_expr$) >>]
+      ([], <:expr< (Expr $str:str_expr$) >>)]
   ];
   prop: 
   [
-    [propid = propid; ":"; propval = propval -> <:expr< { prop_name = $str:propid$; prop_val = $propval$} >>] 
+    [propid = propid; ":"; propval = propval 
+    -> let (s_infs, records) = propval in
+      (s_infs, <:expr< { prop_name = $str:propid$; prop_val = $records$} >>)] 
   ];
   node:
   [
-    [checkQmlObj; nodetype = qml -> <:expr< (QmlObj $nodetype$) >>] |
-    [nodetype = prop -> <:expr< (QmlProp $nodetype$) >>] | [nodetype = slot -> <:expr< (QmlSlot $nodetype$) >>]
+    [checkSlot; nodetype = slot 
+    -> 
+       let (nv, slot_body, s_record) = nodetype in
+      ([(nv, slot_body)], <:expr< (QmlSlot $s_record$) >>)] |
+    [checkQmlObj; nodetype = qml 
+    -> let s_infs, qqml = nodetype in
+      (s_infs, <:expr< (QmlObj $qqml$) >>)] |
+    [nodetype = prop 
+    -> let (s_infs, records) = nodetype in
+      (s_infs, <:expr< (QmlProp $records$) >>)]
   ];
   slot:
   [
-    ["slot"; slot_name = UIDENT; ":"; "{"; slot_body = expr; "}" -> <:expr< { slot_name = $str:slot_name$; slot_body = $slot_body$}  >> ]
+    ["slot"; slot_name = LIDENT; ":"; "{"; slot_body = expr LEVEL "expr1"; "}" 
+    -> 
+      let nv = next_val () in  
+      let str_nv = Int.to_string nv in
+      (nv, <:expr< $slot_body$ >>, <:expr< { slot_name = $str:slot_name$; slot_number = $int:str_nv$}  >>) ]
   ];
 END
 

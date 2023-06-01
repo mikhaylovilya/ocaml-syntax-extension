@@ -39,5 +39,5 @@
   $ dune exec ../tests/test5.exe 2>&1 | egrep -v "Gtk-Message|\":/q|qt.qpa.plugin|startup_stubs.cpp"
   single func in OCaml
   quitting gui application
-$ camlp5o -I . ocamlext.cma pr_o.cmo ../tests/test5.ml > asdf.ml
-$ ocamlopt -o asdf pr_qml.ml asdf.ml -dsource
+  $ camlp5o -I . ocamlext.cma pr_o.cmo ../tests/test5.ml > asdf.ml
+  $ ocamlopt -o asdf pr_qml.ml asdf.ml -dsource

@@ -4,10 +4,10 @@ open Stdio *)
 open Lablqml
 open Caml_dynamic.Caml_dynamic_qobj
 
-(* type qml_slot =
+type qml_slot =
   { slot_name : string
-  ; slot_body : MLast.expr
-  } *)
+  ; slot_number : int
+  }
 
 type qml_obj =
   { obj_name : string
@@ -17,7 +17,7 @@ type qml_obj =
 and qml_node =
   | QmlProp of qml_prop
   | QmlObj of qml_obj
-  | QmlSlot of string
+  | QmlSlot of qml_slot
 
 and qml_prop =
   { prop_name : string
@@ -32,6 +32,7 @@ type qml_code =
   { qml_imports : string list
   ; qml_obj : qml_obj
   }
+(* qml_signals_num : int *)
 
 let rec tab = function
   | 0 -> ""
@@ -58,19 +59,24 @@ and obj_to_string q_obj tp =
     | nodeshd :: nodestl ->
       (function
        | QmlProp qp -> prop_to_string qp tp
-       | QmlObj qo ->
-         obj_to_string qo tp
-         (* | QmlSlot qs ->
+       | QmlObj qo -> obj_to_string qo tp
+       | QmlSlot qs ->
          prop_to_string
-           { prop_name = qs; prop_val = Expr ("" ^ Int.to_string (np + 1)) }
-           tp*))
+           { prop_name = qs.slot_name
+           ; prop_val = Expr ("qml_signal" ^ Int.to_string qs.slot_number ^ "()")
+           }
+           tp)
         nodeshd
       ^ f nodestl tp
   in
   String.concat "" [ base; f q_obj.obj_nodes (tp + 1); tab tp; "}"; "\n" ]
 ;;
 
+(* let signals_to_string num = 
+   *)
+
 let code_to_string q_code =
+  (*ns - number of slots*)
   List.fold_right
     (fun x acc ->
       if String.equal acc ""

@@ -32,6 +32,9 @@ QML "../tests/test51.qml"
 
     Button {
       id: btn1;
+      slot onClicked: {
+        print_endline "sknfds"
+      };
       text: "Do_smth()"
     }
   }
